@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="colorPrimary">#ffb300</color>
+    <color name="colorPrimaryLight">#ffe54c</color>
+    <color name="colorPrimaryDark">#c68400</color>
+
+    <color name="colorSecondary">#78909c</color>
+    <color name="colorSecondaryLight">#a7c0cd</color>
+    <color name="colorSecondaryDark">#4b636e</color>
+
+    <color name="black">@android:color/black</color>
+    <color name="white">@android:color/white</color>
+    <color name="gray">@color/colorSecondaryDark</color>
+    <color name="gray_tertiary">#454545</color>
+    <color name="pomegranate">#f4511e</color>
+</resources>

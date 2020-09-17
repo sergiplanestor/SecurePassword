@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "379988874510",
+    "firebase_url": "https://password-2038e.firebaseio.com",
+    "project_id": "password-2038e",
+    "storage_bucket": "password-2038e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:379988874510:android:a32c2ff7b4f5b1ca27b35f",
+        "android_client_info": {
+          "package_name": "revolhope.splanes.com.securepassword"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "379988874510-mrhuncstjgt4i4kuf89ri2u586dbni8n.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA_AuggcNMdiDYK89HJ7N3fKgMo1qtRHtU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "379988874510-mrhuncstjgt4i4kuf89ri2u586dbni8n.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
