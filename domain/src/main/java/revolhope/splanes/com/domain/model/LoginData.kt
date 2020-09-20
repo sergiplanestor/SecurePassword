@@ -1,6 +1,7 @@
 package revolhope.splanes.com.domain.model
 
 import androidx.annotation.IntDef
+import java.io.Serializable
 
 data class LoginData(
     val email: String,
@@ -9,7 +10,7 @@ data class LoginData(
     @AuthenticationMethod val defaultAuthMethod: Int,
     val createdOn: Long,
     val lastAccessOn: Long
-)
+): Serializable
 
 @IntDef(AuthenticationMethod.PASSWORD, AuthenticationMethod.BIOMETRIC, AuthenticationMethod.PATTERN)
 @kotlin.annotation.Retention(AnnotationRetention.SOURCE)

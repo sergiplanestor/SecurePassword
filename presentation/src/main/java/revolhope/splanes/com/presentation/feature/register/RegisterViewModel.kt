@@ -13,7 +13,7 @@ import revolhope.splanes.com.domain.model.LoginData
 import revolhope.splanes.com.domain.usecase.InsertLoginDataUseCase
 import revolhope.splanes.com.domain.util.sha256
 import revolhope.splanes.com.presentation.R
-import revolhope.splanes.com.presentation.feature.common.base.BaseViewModel
+import revolhope.splanes.com.presentation.common.base.BaseViewModel
 
 class RegisterViewModel @ViewModelInject constructor(
     @Assisted private val state: SavedStateHandle,
@@ -62,7 +62,7 @@ class RegisterViewModel @ViewModelInject constructor(
                 _emailError.value = false to context.getString(R.string.error_blank_field)
                 hasErrors = true
             }
-            email.matches(Regex(".*@.*(\\.com|\\.es)")) -> {
+            !email.matches(Regex(".*@.*(\\.com|\\.es)")) -> {
                 _emailError.value = false to context.getString(R.string.error_email_pattern)
                 hasErrors = true
             }
@@ -70,7 +70,7 @@ class RegisterViewModel @ViewModelInject constructor(
                 _emailError.value = true to ""
             }
         }
-        if (pattern != null) {
+        if (pattern == null) {
             _patternError.value = true
             hasErrors = true
         } else {

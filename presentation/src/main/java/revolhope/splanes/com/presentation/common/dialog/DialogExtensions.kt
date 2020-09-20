@@ -1,4 +1,4 @@
-package revolhope.splanes.com.presentation.feature.common.dialog
+package revolhope.splanes.com.presentation.common.dialog
 
 import android.app.AlertDialog
 import android.content.Context
@@ -11,7 +11,7 @@ import android.text.style.MetricAffectingSpan
 import android.widget.Toast
 import androidx.fragment.app.FragmentActivity
 import revolhope.splanes.com.presentation.R
-import revolhope.splanes.com.presentation.feature.common.base.BaseDialog
+import revolhope.splanes.com.presentation.common.base.BaseDialog
 
 fun Context.showToast(message: String, duration: Int = Toast.LENGTH_LONG) {
     Toast.makeText(this, message, duration).show()

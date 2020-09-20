@@ -3,10 +3,16 @@ package revolhope.splanes.com.presentation.feature.login
 import android.app.Activity
 import androidx.activity.viewModels
 import dagger.hilt.android.AndroidEntryPoint
+import revolhope.splanes.com.domain.model.AuthenticationMethod
+import revolhope.splanes.com.domain.model.LoginData
 import revolhope.splanes.com.presentation.R
 import revolhope.splanes.com.presentation.databinding.ActivityLoginBinding
 import revolhope.splanes.com.presentation.extensions.*
-import revolhope.splanes.com.presentation.feature.common.base.BaseActivity
+import revolhope.splanes.com.presentation.common.base.BaseActivity
+import revolhope.splanes.com.presentation.feature.login.authfragment.biometric.LoginBiometricFragment
+import revolhope.splanes.com.presentation.feature.login.authfragment.password.LoginPasswordFragment
+import revolhope.splanes.com.presentation.feature.login.authfragment.pattern.LoginPatternFragment
+import revolhope.splanes.com.presentation.feature.login.authfragment.register.LoginRegisterFragment
 import revolhope.splanes.com.presentation.feature.register.RegisterActivity
 
 @AndroidEntryPoint
@@ -17,26 +23,9 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>() {
     override val layoutResource: Int
         get() = R.layout.activity_login
 
-    override fun initViews() {
-        super.initViews()
-        binding.loginHelp.makeLinks(
-            links = arrayOf(
-                Pair(
-                    getString(R.string.click_here),
-                    {
-
-                    }
-                )
-            )
-        )
-        binding.registerButton.setOnClickListener { onRegisterClick() }
-    }
-
     override fun initObservers() {
         super.initObservers()
-        observe(viewModel.loginData) {
-            it?.let(viewModel::doLogin) ?: updateUI()
-        }
+        observe(viewModel.loginData, ::updateUI)
         observe(viewModel.loginResponse) {
             // TODO(navigate or fetch data)
         }
@@ -47,21 +36,32 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>() {
         viewModel.fetchLoginData()
     }
 
-    private fun onRegisterClick() {
-        startActivityForResult(
-            intent = RegisterActivity.getIntent(this),
-            requestCode = RegisterActivity.REQ_CODE
-        ) { data, _, resultCode ->
-            if (resultCode == Activity.RESULT_OK) {
+    fun refreshUI() = loadData()
 
-            }
-        }
+    private fun updateUI(loginData: LoginData?) {
+        val contract = loginData?.let {
+             when(it.defaultAuthMethod) {
+                AuthenticationMethod.PASSWORD -> {
+                    LoginPasswordFragment()
+                }
+                AuthenticationMethod.PATTERN -> {
+                    LoginPatternFragment()
+                }
+                else /*AuthenticationMethod.BIOMETRIC*/ -> {
+                    LoginBiometricFragment()
+                }
+            }.also { contract ->
+                 contract.setLoginData(it)
+                 contract.setOnCredentialsValidated(::onCredentialsValidated)
+             }
+        } ?: LoginRegisterFragment()
+        supportFragmentManager
+            .beginTransaction()
+            .add(R.id.authContainer, contract)
+            .commitAllowingStateLoss()
     }
 
-    private fun updateUI() {
-        binding.loginHelp.gone()
-        binding.fingerIcon.gone()
-        binding.registerHelp.visible()
-        binding.registerButton.visible()
+    private fun onCredentialsValidated() {
+
     }
 }

@@ -1,4 +1,4 @@
-package revolhope.splanes.com.presentation.feature.common.base
+package revolhope.splanes.com.presentation.common.base
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

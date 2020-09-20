@@ -1,4 +1,4 @@
-package revolhope.splanes.com.presentation.feature.common.base
+package revolhope.splanes.com.presentation.common.base
 
 import android.content.Intent
 import android.os.Bundle
@@ -52,7 +52,6 @@ abstract class BaseActivity<T: ViewDataBinding> : AppCompatActivity() {
         when (item?.itemId) {
             android.R.id.home -> {
                 finish()
-                overrideTransition()
                 return true
             }
         }
@@ -63,6 +62,11 @@ abstract class BaseActivity<T: ViewDataBinding> : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         this.onActivityResultMap[requestCode]?.invoke(data, requestCode, resultCode)
         this.onActivityResultMap.remove(requestCode)
+    }
+
+    override fun finish() {
+        super.finish()
+        overrideTransition()
     }
 
     protected open fun initViews() {

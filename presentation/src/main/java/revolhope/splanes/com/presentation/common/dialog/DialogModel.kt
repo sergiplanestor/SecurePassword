@@ -1,4 +1,4 @@
-package revolhope.splanes.com.presentation.feature.common.dialog
+package revolhope.splanes.com.presentation.common.dialog
 
 sealed class DialogModel(
     open val title: String? = null,

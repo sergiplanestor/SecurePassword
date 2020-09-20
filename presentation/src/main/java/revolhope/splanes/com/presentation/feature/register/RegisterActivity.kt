@@ -2,7 +2,6 @@ package revolhope.splanes.com.presentation.feature.register
 
 import android.app.Activity
 import android.content.Intent
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.core.os.bundleOf
 import com.andrognito.patternlockview.PatternLockView
@@ -10,12 +9,12 @@ import com.andrognito.patternlockview.listener.PatternLockViewListener
 import dagger.hilt.android.AndroidEntryPoint
 import revolhope.splanes.com.domain.model.AuthenticationMethod
 import revolhope.splanes.com.presentation.R
+import revolhope.splanes.com.presentation.common.base.BaseActivity
+import revolhope.splanes.com.presentation.common.dialog.DialogModel
+import revolhope.splanes.com.presentation.common.dialog.showPickerDialog
+import revolhope.splanes.com.presentation.common.dialog.showToast
 import revolhope.splanes.com.presentation.databinding.ActivityRegisterBinding
 import revolhope.splanes.com.presentation.extensions.observe
-import revolhope.splanes.com.presentation.feature.common.base.BaseActivity
-import revolhope.splanes.com.presentation.feature.common.dialog.DialogModel
-import revolhope.splanes.com.presentation.feature.common.dialog.showPickerDialog
-import revolhope.splanes.com.presentation.feature.common.dialog.showToast
 
 @AndroidEntryPoint
 class RegisterActivity : BaseActivity<ActivityRegisterBinding>() {
@@ -32,13 +31,15 @@ class RegisterActivity : BaseActivity<ActivityRegisterBinding>() {
     companion object {
         private const val PATTERN_DELAY = 750L
         const val REQ_CODE = 0x459
-        fun getIntent(activity: BaseActivity<*>) =
-            Intent(activity, RegisterActivity::class.java).apply {
-                putExtras(
-                    bundleOf(
-                        EXTRA_NAVIGATION_TRANSITION to NavTransition.LATERAL
+        fun getIntent(activity: BaseActivity<*>?) =
+            activity?.let {
+                Intent(activity, RegisterActivity::class.java).apply {
+                    putExtras(
+                        bundleOf(
+                            EXTRA_NAVIGATION_TRANSITION to NavTransition.LATERAL
+                        )
                     )
-                )
+                }
             }
     }
 
@@ -109,6 +110,7 @@ class RegisterActivity : BaseActivity<ActivityRegisterBinding>() {
                             }
                             else -> AuthenticationMethod.PASSWORD
                         }
+
                     }
                 )
             )
@@ -131,7 +133,7 @@ class RegisterActivity : BaseActivity<ActivityRegisterBinding>() {
                 pattern = it.second
             } else {
                 pattern = null
-                Toast.makeText(this, it.second, Toast.LENGTH_LONG).show()
+                showToast(it.second)
             }
             binding.patternLockView.postDelayed(
                 { binding.patternLockView.clearPattern() },
@@ -159,7 +161,7 @@ class RegisterActivity : BaseActivity<ActivityRegisterBinding>() {
         observe(viewModel.registerState) { registerSuccess ->
             if (registerSuccess) {
                 setResult(Activity.RESULT_OK)
-                onBackPressed()
+                finish()
             } else {
                 showToast(R.string.error_storing_credentials)
             }

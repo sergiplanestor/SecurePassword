@@ -20,6 +20,12 @@
     <string name="pick_auth_mode_title">Choose default authentication</string>
     <string name="pick_auth_mode_message">This will configure the default mode to identify you on SecurePassword :)!</string>
     <string name="error">Error</string>
+    <string name="error_biometrics_generic">Hum.. Biometric service error. Try it again later!</string>
+    <string name="error_password_not_match">Invalid password! Try again.</string>
+    <string name="error_biometrics_no_permissions">Hum.. You don\'t have granted permissions to use this feature. Enable it on Settings!</string>
+    <string name="error_biometrics_currently_unavailable">Ops, it seems that biometric service are not currently available :(</string>
+    <string name="error_biometrics_non_enrolled">Ops, no biometrics enrolled on device. Check it on Settings</string>
+    <string name="error_biometrics_non_hardware">Ops, this device have not biometric feature. Choose another auth method</string>
     <string name="error_storing_credentials">Ops, there was an error while storing credentials :(</string>
     <string name="error_pattern_generic">Ops, it seems that there was an error with pattern, try it again.</string>
     <string name="error_pattern_size">Pattern minimum length must be 4 dots.</string>

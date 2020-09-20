@@ -8,7 +8,7 @@ import androidx.lifecycle.SavedStateHandle
 import revolhope.splanes.com.domain.model.LoginData
 import revolhope.splanes.com.domain.usecase.DoLoginUseCase
 import revolhope.splanes.com.domain.usecase.GetLoginDataUseCase
-import revolhope.splanes.com.presentation.feature.common.base.BaseViewModel
+import revolhope.splanes.com.presentation.common.base.BaseViewModel
 
 class LoginViewModel @ViewModelInject constructor(
     private val getLoginDataUseCase: GetLoginDataUseCase,
