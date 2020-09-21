@@ -1,4 +1,4 @@
-package revolhope.splanes.com.presentation.extensions
+package revolhope.splanes.com.presentation.common.extensions
 
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData

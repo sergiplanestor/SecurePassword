@@ -8,5 +8,7 @@ interface UserRepository {
 
     suspend fun insertUserLoginData(loginData: LoginData): Boolean?
 
+    suspend fun registerUser(loginData: LoginData): Boolean
+
     suspend fun doUserLogin(loginData: LoginData): Boolean
 }

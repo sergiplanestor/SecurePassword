@@ -14,11 +14,15 @@ import revolhope.splanes.com.presentation.common.dialog.DialogModel
 import revolhope.splanes.com.presentation.common.dialog.showPickerDialog
 import revolhope.splanes.com.presentation.common.dialog.showToast
 import revolhope.splanes.com.presentation.databinding.ActivityRegisterBinding
-import revolhope.splanes.com.presentation.extensions.observe
+import revolhope.splanes.com.presentation.common.extensions.observe
+import revolhope.splanes.com.presentation.util.biometric.BiometricUtils
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class RegisterActivity : BaseActivity<ActivityRegisterBinding>() {
 
+    @Inject
+    lateinit var biometricUtils: BiometricUtils
     private val viewModel: RegisterViewModel by viewModels()
     private var pattern: String? = null
 
@@ -117,7 +121,6 @@ class RegisterActivity : BaseActivity<ActivityRegisterBinding>() {
         }
         binding.storeButton.setOnClickListener {
             viewModel.storeCredentials(
-                context = this,
                 email = binding.emailTextInput.text?.toString(),
                 pwd = binding.pwdTextInput.text?.toString(),
                 pattern = pattern,
@@ -141,22 +144,25 @@ class RegisterActivity : BaseActivity<ActivityRegisterBinding>() {
             )
         }
         observe(viewModel.patternError) {
-            if (it) {
-                binding.patternLockView.normalStateColor = getColor(android.R.color.holo_green_dark)
+            binding.patternLockView.normalStateColor = if (it) {
+                getColor(android.R.color.holo_green_dark)
             } else {
-                binding.patternLockView.normalStateColor = getColor(R.color.pomegranate)
+                getColor(R.color.pomegranate)
             }
             binding.patternLockView.invalidate()
         }
         observe(viewModel.emailError) {
-            if (it.first) {
-                binding.emailInputLayout.error = null
-            } else {
-                binding.emailInputLayout.error = it.second
-            }
+            binding.emailInputLayout.error = if (it.first) null else getString(it.second)
         }
         observe(viewModel.pwdError) {
-            binding.pwdInputLayout.error = if (it) getString(R.string.error_pwd_selected) else null
+            binding.pwdInputLayout.error = if (it.first) null else getString(it.second)
+        }
+        observe(viewModel.storeCredentialsState) { storeSuccess ->
+            if (storeSuccess) {
+                viewModel.registerUser()
+            } else {
+                showToast(R.string.error_storing_credentials)
+            }
         }
         observe(viewModel.registerState) { registerSuccess ->
             if (registerSuccess) {

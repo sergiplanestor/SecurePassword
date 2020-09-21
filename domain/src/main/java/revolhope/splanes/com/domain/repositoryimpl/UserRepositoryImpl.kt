@@ -20,6 +20,9 @@ class UserRepositoryImpl @Inject constructor(
             loginData.let(UserMapper::fromLoginDataModelToResponse)
         )
 
+    override suspend fun registerUser(loginData: LoginData): Boolean =
+        firebaseDataSource.register(loginData.email, loginData.pwd)
+
     override suspend fun doUserLogin(loginData: LoginData): Boolean =
         firebaseDataSource.login(loginData.email, loginData.pwd)
 }

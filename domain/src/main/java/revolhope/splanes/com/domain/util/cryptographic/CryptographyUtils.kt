@@ -1,17 +1,29 @@
-package revolhope.splanes.com.presentation.util.cryptographic
+package revolhope.splanes.com.domain.util.cryptographic
 
 import android.hardware.fingerprint.FingerprintManager
 import android.os.CancellationSignal
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
+import revolhope.splanes.com.domain.BuildConfig
 import java.security.KeyStore
 import javax.crypto.Cipher
 import javax.crypto.KeyGenerator
+import javax.crypto.SecretKey
+import javax.crypto.spec.IvParameterSpec
+import javax.crypto.spec.SecretKeySpec
 import javax.inject.Inject
 
 class CryptographyUtils @Inject constructor() {
 
     companion object {
+        private val secretKey = BuildConfig.SECRET.decode().let {
+            SecretKeySpec(
+                it,
+                0,
+                it.size,
+                KeyProperties.KEY_ALGORITHM_AES
+            )
+        }
         private const val ANDROID_KEYSTORE = "AndroidKeyStore"
         private const val FINGERPRINT_KEY = "FingerprintKey"
         private const val TRANSFORMATION =
@@ -29,40 +41,42 @@ class CryptographyUtils @Inject constructor() {
         }
     }
 
-    private fun generateKey(keyName: String, userAuthRequired: Boolean = false) {
+    private fun generateFingerKey(): SecretKey? {
         try {
             val keyGenerator =
                 KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES, ANDROID_KEYSTORE)
             keyGenerator?.init(
                 KeyGenParameterSpec.Builder(
-                    keyName,
+                    FINGERPRINT_KEY,
                     KeyProperties.PURPOSE_ENCRYPT or KeyProperties.PURPOSE_DECRYPT
                 ).apply {
                     setBlockModes(KeyProperties.BLOCK_MODE_CBC)
-                    setUserAuthenticationRequired(userAuthRequired)
+                    setUserAuthenticationRequired(true)
                     setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_PKCS7)
+                    setKeySize(256)
                 }.build()
             )
-            keyGenerator?.generateKey()
+            return keyGenerator?.generateKey()
         } catch (e: Exception) {
             e.printStackTrace()
+            return null
         }
     }
 
+    // TODO!
     private fun generateCipher(
         keyName: String,
-        mode: Int
+        mode: Int,
+        iv: ByteArray? = null
     ): Cipher? {
         return try {
             Cipher.getInstance(TRANSFORMATION).apply {
                 keyStore?.load(null)
-                init(
-                    mode,
-                    keyStore?.getKey(
-                        keyName,
-                        null
-                    )
-                )
+                if (iv != null) {
+                    init(mode, keyStore?.getKey(keyName, null), IvParameterSpec(iv))
+                } else {
+                    init(mode, keyStore?.getKey(keyName, null))
+                }
             }
         } catch (e: Exception) {
             e.printStackTrace()
@@ -70,9 +84,9 @@ class CryptographyUtils @Inject constructor() {
         }
     }
 
-    private fun existsKey(keyName: String): Boolean {
+    private fun existsFingerKey(): Boolean {
         keyStore?.load(null)
-        return keyStore?.containsAlias(keyName) ?: false
+        return keyStore?.containsAlias(FINGERPRINT_KEY) ?: false
     }
 
     fun fingerprintAuth(
@@ -81,8 +95,7 @@ class CryptographyUtils @Inject constructor() {
         onError: (String) -> Unit,
         onFail: () -> Unit
     ) {
-        if (!existsKey(FINGERPRINT_KEY)) generateKey(FINGERPRINT_KEY, true)
-        generateCipher(FINGERPRINT_KEY, Cipher.ENCRYPT_MODE)?.let(FingerprintManager::CryptoObject)
+        if (!existsFingerKey()) generateFingerKey()
         fingerprintManager.authenticate(
             generateCipher(
                 FINGERPRINT_KEY,
@@ -111,12 +124,53 @@ class CryptographyUtils @Inject constructor() {
         )
     }
 
-    fun encrypt() {
+    fun encrypt(value: String): CryptographyModel =
+        value.toByteArray().let { bytes ->
+            var iv1: ByteArray
+            var iv2: ByteArray
 
-    }
+            val key = KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES).apply {
+                init(256)
+            }.generateKey()
 
-    fun decrypt() {
+            val rawData = Cipher.getInstance(TRANSFORMATION).apply {
+                init(Cipher.ENCRYPT_MODE, key)
+            }.run {
+                val raw = doFinal(bytes)
+                iv1 = this.iv
+                raw.encode()
+            }
 
-    }
+            val secret = Cipher.getInstance(TRANSFORMATION).apply {
+                init(Cipher.ENCRYPT_MODE, secretKey)
+            }.run {
+                val raw = doFinal(key.encoded)
+                iv2 = this.iv
+                raw.encode()
+            }
+
+            CryptographyModel(
+                raw = rawData,
+                secret = secret,
+                ivRaw = iv1.encode(),
+                ivSecret = iv2.encode()
+            )
+        }
+
+    fun decrypt(model: CryptographyModel): String =
+        Cipher.getInstance(TRANSFORMATION).apply {
+            init(Cipher.DECRYPT_MODE, secretKey, IvParameterSpec(model.ivSecret.decode()))
+        }.doFinal(model.secret.decode()).let {
+            Cipher.getInstance(TRANSFORMATION).apply {
+                init(
+                    Cipher.DECRYPT_MODE, SecretKeySpec(
+                        it,
+                        0,
+                        it.size,
+                        KeyProperties.KEY_ALGORITHM_AES
+                    ), IvParameterSpec(model.ivRaw.decode())
+                )
+            }.doFinal(model.raw.decode())
+        }.let { String(it) }
 
 }

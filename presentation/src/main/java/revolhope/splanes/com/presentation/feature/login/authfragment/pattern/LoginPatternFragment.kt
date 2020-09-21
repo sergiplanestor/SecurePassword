@@ -1,6 +1,5 @@
 package revolhope.splanes.com.presentation.feature.login.authfragment.pattern
 
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.andrognito.patternlockview.PatternLockView
 import com.andrognito.patternlockview.listener.PatternLockViewListener
@@ -9,7 +8,7 @@ import revolhope.splanes.com.presentation.R
 import revolhope.splanes.com.presentation.common.base.BaseFragment
 import revolhope.splanes.com.presentation.common.dialog.showToast
 import revolhope.splanes.com.presentation.databinding.FragmentLoginPatternBinding
-import revolhope.splanes.com.presentation.extensions.observe
+import revolhope.splanes.com.presentation.common.extensions.observe
 import revolhope.splanes.com.presentation.feature.login.authfragment.LoginContract
 
 class LoginPatternFragment : BaseFragment<FragmentLoginPatternBinding>(), LoginContract {
@@ -67,12 +66,10 @@ class LoginPatternFragment : BaseFragment<FragmentLoginPatternBinding>(), LoginC
             if (it) {
                 onCredentialsValidated.invoke()
             } else {
-                context?.showToast("T_Pattern error!")
+                requireContext().showToast(R.string.error_pattern_invalid)
+                binding.patternLockView.normalStateColor = requireContext().getColor(R.color.pomegranate)
+                binding.patternLockView.invalidate()
             }
-            binding.patternLockView.postDelayed(
-                { binding.patternLockView.clearPattern() },
-                PATTERN_DELAY
-            )
         }
     }
 

@@ -5,7 +5,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ApplicationComponent
 import revolhope.splanes.com.presentation.util.biometric.BiometricUtils
-import revolhope.splanes.com.presentation.util.cryptographic.CryptographyUtils
+import revolhope.splanes.com.domain.util.cryptographic.CryptographyUtils
 import javax.inject.Singleton
 
 @Module

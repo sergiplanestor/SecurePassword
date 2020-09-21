@@ -10,7 +10,8 @@
     <application>
         <activity
             android:name=".feature.login.LoginActivity"
-            android:theme="@style/Theme.NoActionBar">
+            android:theme="@style/Theme.NoActionBar"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.VIEW" />
@@ -21,7 +22,13 @@
 
         <activity
             android:name=".feature.register.RegisterActivity"
-            android:theme="@style/Theme.NoActionBar" />
+            android:theme="@style/Theme.NoActionBar"
+            android:screenOrientation="portrait"/>
+
+        <activity
+            android:name=".feature.dashboard.DashboardActivity"
+            android:theme="@style/Theme.ActionBar"
+            android:screenOrientation="portrait"/>
 
     </application>
 

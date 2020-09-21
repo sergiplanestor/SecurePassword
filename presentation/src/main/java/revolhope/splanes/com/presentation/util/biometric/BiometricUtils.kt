@@ -9,9 +9,9 @@ import android.os.Build
 import androidx.biometric.BiometricPrompt
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.Fragment
 import revolhope.splanes.com.presentation.R
-import revolhope.splanes.com.presentation.util.cryptographic.CryptographyUtils
+import revolhope.splanes.com.domain.util.cryptographic.CryptographyUtils
 import javax.inject.Inject
 
 
@@ -65,21 +65,21 @@ class BiometricUtils @Inject constructor(private val cryptographyUtils: Cryptogr
         }
 
 
-    fun authenticate(activity: FragmentActivity, responseModel: BiometricResponseModel) {
+    fun authenticate(fragment: Fragment, responseModel: BiometricResponseModel) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            authenticateSdkQ(activity, responseModel)
+            authenticateSdkQ(fragment, responseModel)
         } else {
-            authenticateSdkLessThanQ(activity, responseModel)
+            authenticateSdkLessThanQ(fragment, responseModel)
         }
     }
 
     private fun authenticateSdkQ(
-        activity: FragmentActivity,
+        fragment: Fragment,
         responseModel: BiometricResponseModel
     ) {
-        val executor = ContextCompat.getMainExecutor(activity)
+        val executor = ContextCompat.getMainExecutor(fragment.requireContext())
         BiometricPrompt(
-            activity,
+            fragment,
             executor,
             object : BiometricPrompt.AuthenticationCallback() {
                 override fun onAuthenticationError(
@@ -105,20 +105,20 @@ class BiometricUtils @Inject constructor(private val cryptographyUtils: Cryptogr
         ).run {
             authenticate(
                 BiometricPrompt.PromptInfo.Builder()
-                    .setTitle("T_Biometric login for my app")
-                    .setSubtitle("T_Log in using your biometric credential")
-                    .setNegativeButtonText("T_Use account password")
+                    .setTitle(fragment.getString(R.string.biometrics))
+                    .setSubtitle(fragment.getString(R.string.biometric_help))
+                    .setNegativeButtonText(fragment.getString(R.string.cancel))
                     .build()
             )
         }
     }
 
     private fun authenticateSdkLessThanQ(
-        activity: FragmentActivity,
+        fragment: Fragment,
         responseModel: BiometricResponseModel
     ) {
         cryptographyUtils.fingerprintAuth(
-            fingerprintManager = activity.getSystemService(FingerprintManager::class.java),
+            fingerprintManager = fragment.requireActivity().getSystemService(FingerprintManager::class.java),
             onSuccess = responseModel.onSuccess,
             onError = responseModel.onError,
             onFail = responseModel.onFail,
