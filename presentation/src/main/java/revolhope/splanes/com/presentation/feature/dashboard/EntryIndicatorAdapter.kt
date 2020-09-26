@@ -18,6 +18,10 @@ class EntryIndicatorAdapter(
 
     private val dirList: MutableList<EntryDirectoryModel> = mutableListOf()
 
+    private companion object {
+        private const val SEPARATOR = " > "
+    }
+
     init {
         createListFromDirectory()
     }
@@ -31,13 +35,12 @@ class EntryIndicatorAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         with(dirList[position]) {
             holder.name.text = if (id != EntryDirectoryModel.Root.id) {
-                "$name / "
+                "$name$SEPARATOR"
             } else {
-                "${holder.itemView.context.getString(R.string.home)} / "
+                "${holder.itemView.context.getString(R.string.home)}$SEPARATOR"
             }
-            // holder.setLink(id != directory.id, this, onDirClick)
+            holder.setLink(id != directory.id, this, onDirClick)
         }
-        holder.name.text = dirList[position].name
     }
 
     override fun getItemCount(): Int {
@@ -66,21 +69,23 @@ class EntryIndicatorAdapter(
         fun setLink(
             show: Boolean,
             model: EntryDirectoryModel? = null,
-            callback: (EntryDirectoryModel) -> Unit)
-        {
+            callback: (EntryDirectoryModel) -> Unit
+        ) {
             if (show && model != null) {
                 name.setTextColor(itemView.context.getColor(R.color.colorPrimary))
                 name.text = SpannableString(name.text).apply {
-                    setSpan(UnderlineSpan(), 0, length - 3, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    setSpan(
+                        UnderlineSpan(),
+                        0,
+                        length - SEPARATOR.length,
+                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                    )
                 }
-
-                // name.paintFlags = name.paintFlags or Paint.UNDERLINE_TEXT_FLAG
                 itemView.setOnClickListener {
                     callback.invoke(model)
                 }
             } else {
                 name.setTextColor(itemView.context.getColor(R.color.gray_tertiary))
-                // name.paintFlags = name.paintFlags or (Paint.UNDERLINE_TEXT_FLAG).inv()
             }
         }
     }

@@ -1,6 +1,7 @@
 package revolhope.splanes.com.presentation.feature.dashboard
 
 import android.content.Intent
+import android.view.MenuItem
 import androidx.activity.viewModels
 import androidx.core.os.bundleOf
 import androidx.recyclerview.widget.GridLayoutManager
@@ -14,6 +15,7 @@ import revolhope.splanes.com.presentation.R
 import revolhope.splanes.com.presentation.common.base.BaseActivity
 import revolhope.splanes.com.presentation.common.dialog.vibrate
 import revolhope.splanes.com.presentation.common.extensions.observe
+import revolhope.splanes.com.presentation.common.extensions.visibility
 import revolhope.splanes.com.presentation.databinding.ActivityDashboardBinding
 import revolhope.splanes.com.presentation.feature.entry.dir.EntryDirBottomSheet
 import revolhope.splanes.com.presentation.feature.entry.key.EntryKeyActivity
@@ -47,6 +49,7 @@ class DashboardActivity : BaseActivity<ActivityDashboardBinding>() {
 
     override fun initViews() {
         super.initViews()
+        supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_back)
         binding.fabAddKey.setOnClickListener {
             EntryKeyActivity.start(baseActivity = this, dirModel = currentDirectory)
         }
@@ -57,6 +60,7 @@ class DashboardActivity : BaseActivity<ActivityDashboardBinding>() {
 
     override fun initObservers() {
         super.initObservers()
+        observe(viewModel.loaderState) { if (it) showLoader() else hideLoader() }
         observe(viewModel.entry, ::setupEntries)
         observe(viewModel.insertEntryState) {
             if (it) {
@@ -74,17 +78,25 @@ class DashboardActivity : BaseActivity<ActivityDashboardBinding>() {
 
     private fun setupEntries(dir: EntryDirectoryModel) {
         currentDirectory = dir
-        supportActionBar?.title = if (currentDirectory.id != EntryDirectoryModel.Root.id) {
-            currentDirectory.name
-        } else {
-            getString(R.string.app_name)
-        }
+        setupActionBar()
         setupIndicator()
-        showEmptyState(currentDirectory.content.isEmpty())
+        setupEmptyState(currentDirectory.content.isEmpty())
         binding.recyclerContent.layoutManager =
             GridLayoutManager(this, 3, GridLayoutManager.VERTICAL, false)
         binding.recyclerContent.adapter =
             EntryAdapter(currentDirectory.content, ::onKeyClick, ::onDirClick, ::onLongClick)
+    }
+
+    private fun setupActionBar() {
+        supportActionBar?.run {
+            if (currentDirectory.id != EntryDirectoryModel.Root.id) {
+                title = currentDirectory.name
+                setDisplayHomeAsUpEnabled(true)
+            } else {
+                title = getString(R.string.app_name)
+                setDisplayHomeAsUpEnabled(false)
+            }
+        }
     }
 
     private fun setupIndicator() {
@@ -95,9 +107,7 @@ class DashboardActivity : BaseActivity<ActivityDashboardBinding>() {
         }
     }
 
-    private fun showEmptyState(show: Boolean) {
-
-    }
+    private fun setupEmptyState(show: Boolean) = binding.emptyState.visibility(show)
 
     private fun onNewDir(name: String) {
         viewModel.insertDir(name = name, parentDir = currentDirectory)
@@ -112,6 +122,14 @@ class DashboardActivity : BaseActivity<ActivityDashboardBinding>() {
     private fun onLongClick(entry: EntryModel) {
         vibrate(time = 500)
     }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean =
+        if (item?.itemId == android.R.id.home && currentDirectory.id != EntryDirectoryModel.Root.id) {
+            currentDirectory.parentDirectoryModel?.let(::onDirClick)
+            true
+        } else {
+            super.onOptionsItemSelected(item)
+        }
 
     override fun onBackPressed() {
         currentDirectory.parentDirectoryModel?.let(::onDirClick) ?: super.onBackPressed()

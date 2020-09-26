@@ -6,11 +6,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import revolhope.splanes.com.domain.model.EntryDirectoryModel
-import revolhope.splanes.com.domain.model.EntryModel
 import revolhope.splanes.com.domain.usecase.entry.FetchEntriesUseCase
 import revolhope.splanes.com.domain.usecase.entry.InsertEntryUseCase
 import revolhope.splanes.com.presentation.common.base.BaseViewModel
-import java.util.UUID
+import java.util.*
 
 class DashboardViewModel @ViewModelInject constructor(
     private val fetchEntriesUseCase: FetchEntriesUseCase,

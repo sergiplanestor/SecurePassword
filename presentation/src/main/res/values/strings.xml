@@ -22,6 +22,8 @@
     <string name="ok">OK</string>
     <string name="try_again">Try again</string>
     <string name="home">Home</string>
+    <string name="empty_state_title">Oops :(</string>
+    <string name="empty_state_body">There are no password yet. Add new one!</string>
     <string name="login">Login</string>
     <string name="pick">Pick</string>
     <string name="add_key">Create new key</string>

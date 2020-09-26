@@ -7,11 +7,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import revolhope.splanes.com.presentation.R
+import revolhope.splanes.com.presentation.common.component.AppLoader
 
 abstract class BaseActivity<T: ViewDataBinding> : AppCompatActivity() {
 
     abstract val layoutResource: Int
     lateinit var binding: T
+    private var appLoader: AppLoader? = null
     private var isFirstOnResume: Boolean = true
     private var onActivityResultMap: MutableMap<Int, (Intent?, Int, Int) -> Unit> = mutableMapOf()
 
@@ -29,6 +31,7 @@ abstract class BaseActivity<T: ViewDataBinding> : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, layoutResource)
+        appLoader = findViewById(R.id.appLoader)
         initViews()
         initObservers()
     }
@@ -84,6 +87,10 @@ abstract class BaseActivity<T: ViewDataBinding> : AppCompatActivity() {
     protected open fun reloadData() {
         // Nothing to do here
     }
+
+    fun showLoader() = appLoader?.show()
+
+    fun hideLoader() = runOnUiThread { appLoader?.hide() }
 
     override fun startActivity(intent: Intent?) {
         val anim = getNavAnimations(intent)

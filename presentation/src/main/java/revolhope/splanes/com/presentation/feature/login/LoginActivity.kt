@@ -60,6 +60,7 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>() {
 
     override fun initObservers() {
         super.initObservers()
+        observe(viewModel.loaderState) { if (it) showLoader() else hideLoader() }
         observe(viewModel.loginData, ::updateUI)
         observe(viewModel.loginResponse) {
             if (it) DashboardActivity.start(this) else showToast(R.string.error_generic)
