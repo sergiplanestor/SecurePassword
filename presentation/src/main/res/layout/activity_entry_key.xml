@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/margin_normal">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/nameInputLayout"
+                style="@style/AppTextInputLayout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:startIconDrawable="@drawable/ic_account_name"
+                app:startIconTint="@color/colorPrimary">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/nameEditText"
+                    style="@style/AppTextInputText"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:hint="@string/hint_account_name" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:id="@+id/nameHelp"
+                style="@style/Text.Hint"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/help_mandatory_field"
+                app:layout_constraintEnd_toEndOf="@id/nameInputLayout"
+                app:layout_constraintStart_toStartOf="@id/nameInputLayout"
+                app:layout_constraintTop_toBottomOf="@id/nameInputLayout" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/keyInputLayout"
+                style="@style/AppTextInputLayout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_big"
+                android:layout_marginEnd="@dimen/margin_normal"
+                app:endIconDrawable="@drawable/ic_settings"
+                app:endIconTint="@color/colorPrimaryDark"
+                app:layout_constraintEnd_toStartOf="@id/copyButton"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/nameHelp"
+                app:startIconDrawable="@drawable/ic_key"
+                app:startIconTint="@color/colorPrimary">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/keyEditText"
+                    style="@style/AppTextInputText"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:hint="@string/hint_password" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <ImageButton
+                android:id="@+id/copyButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:src="@drawable/ic_copy"
+                android:tint="@color/colorSecondary"
+                app:layout_constraintBottom_toBottomOf="@id/keyInputLayout"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/keyInputLayout" />
+
+            <TextView
+                android:id="@+id/keyHelp"
+                style="@style/Text.Hint"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/help_mandatory_field"
+                app:layout_constraintEnd_toEndOf="@id/keyInputLayout"
+                app:layout_constraintStart_toStartOf="@id/keyInputLayout"
+                app:layout_constraintTop_toBottomOf="@id/keyInputLayout" />
+
+            <Button
+                android:id="@+id/generateButton"
+                style="@style/Button.Outlined"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_normal"
+                android:text="@string/generate"
+                app:layout_constraintStart_toStartOf="@id/keyHelp"
+                app:layout_constraintTop_toBottomOf="@id/keyHelp" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/extraInfoInputLayout"
+                style="@style/AppTextInputLayout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_big"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/generateButton"
+                app:startIconDrawable="@drawable/ic_extra_info"
+                app:startIconTint="@color/colorPrimary">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/extraInfoEditText"
+                    style="@style/AppTextInputText"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:hint="@string/hint_extra_info" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:id="@+id/extraInfoHelp"
+                style="@style/Text.Hint"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/help_optional_field"
+                app:layout_constraintEnd_toEndOf="@id/extraInfoInputLayout"
+                app:layout_constraintStart_toStartOf="@id/extraInfoInputLayout"
+                app:layout_constraintTop_toBottomOf="@id/extraInfoInputLayout" />
+
+            <TextView
+                android:id="@+id/creationDate"
+                style="@style/Text.Hint"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_big"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/extraInfoHelp" />
+
+            <TextView
+                android:id="@+id/updatedDate"
+                style="@style/Text.Hint"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_normal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/creationDate" />
+
+            <Button
+                android:id="@+id/createButton"
+                style="@style/Button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_extra"
+                android:layout_marginBottom="@dimen/margin_big"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/updatedDate" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
+
+</layout>

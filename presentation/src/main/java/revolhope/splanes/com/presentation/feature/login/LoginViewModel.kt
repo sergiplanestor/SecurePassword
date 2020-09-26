@@ -7,13 +7,12 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import revolhope.splanes.com.domain.model.LoginData
 import revolhope.splanes.com.domain.usecase.user.DoLoginUseCase
-import revolhope.splanes.com.domain.usecase.user.GetLoginDataUseCase
+import revolhope.splanes.com.domain.usecase.user.FetchLoginDataUseCase
 import revolhope.splanes.com.domain.usecase.user.InsertLoginDataUseCase
-import revolhope.splanes.com.domain.usecase.user.RegisterUserUseCase
 import revolhope.splanes.com.presentation.common.base.BaseViewModel
 
 class LoginViewModel @ViewModelInject constructor(
-    private val getLoginDataUseCase: GetLoginDataUseCase,
+    private val fetchLoginDataUseCase: FetchLoginDataUseCase,
     private val insertLoginDataUseCase: InsertLoginDataUseCase,
     private val doLoginUseCase: DoLoginUseCase,
     @Assisted private val state: SavedStateHandle
@@ -28,7 +27,7 @@ class LoginViewModel @ViewModelInject constructor(
     fun fetchLoginData() {
         launchAsync {
             handleResponse(
-                responseState = getLoginDataUseCase.invoke(GetLoginDataUseCase.Request),
+                responseState = fetchLoginDataUseCase.invoke(FetchLoginDataUseCase.Request),
                 shouldPostError = false
             ).run(_loginData::postValue)
         }
@@ -37,7 +36,7 @@ class LoginViewModel @ViewModelInject constructor(
     fun changeAuthMode(authMode: Int) {
         launchAsync {
             handleResponse(
-                responseState = getLoginDataUseCase.invoke(GetLoginDataUseCase.Request),
+                responseState = fetchLoginDataUseCase.invoke(FetchLoginDataUseCase.Request),
                 shouldPostError = false
             )?.run {
                 handleResponse(
@@ -55,7 +54,7 @@ class LoginViewModel @ViewModelInject constructor(
     fun doLogin() {
         launchAsync {
             handleResponse(
-                responseState = getLoginDataUseCase.invoke(GetLoginDataUseCase.Request),
+                responseState = fetchLoginDataUseCase.invoke(FetchLoginDataUseCase.Request),
                 shouldPostError = false
             )?.run {
                 launchAsync {

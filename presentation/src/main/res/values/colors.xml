@@ -8,7 +8,9 @@
     <color name="colorSecondary">#78909c</color>
     <color name="colorSecondaryLight">#a7c0cd</color>
     <color name="colorSecondaryDark">#4b636e</color>
+    <color name="colorSecondaryAlpha20">#334b636e</color>
 
+    <color name="transparent">@android:color/transparent</color>
     <color name="black">@android:color/black</color>
     <color name="white">@android:color/white</color>
     <color name="gray">@color/colorSecondaryDark</color>

@@ -7,6 +7,7 @@
     <uses-feature android:name="android.hardware.fingerprint" android:required="false" />
     <uses-feature android:name="android.hardware.biometrics" android:required="false" />
 
+    <uses-permission android:name="android.permission.VIBRATE" />
     <application>
         <activity
             android:name=".feature.login.LoginActivity"
@@ -27,6 +28,11 @@
 
         <activity
             android:name=".feature.dashboard.DashboardActivity"
+            android:theme="@style/Theme.ActionBar"
+            android:screenOrientation="portrait"/>
+
+        <activity
+            android:name=".feature.entry.key.EntryKeyActivity"
             android:theme="@style/Theme.ActionBar"
             android:screenOrientation="portrait"/>
 

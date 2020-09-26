@@ -5,9 +5,9 @@ import revolhope.splanes.com.domain.repository.UserRepository
 import revolhope.splanes.com.domain.usecase.BaseUseCase
 import javax.inject.Inject
 
-class GetLoginDataUseCase @Inject constructor(
+class FetchLoginDataUseCase @Inject constructor(
     private val userRepository: UserRepository
-) : BaseUseCase<GetLoginDataUseCase.Request, LoginData?>() {
+) : BaseUseCase<FetchLoginDataUseCase.Request, LoginData?>() {
 
     override suspend fun execute(request: Request): LoginData? =
         userRepository.fetchUserLoginData()

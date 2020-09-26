@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="DualSelector">
+        <attr name="optionLeft" format="string" />
+        <attr name="optionRight" format="string" />
+        <attr name="initialSelected" format="enum">
+            <enum name="optionLeft" value="0" />
+            <enum name="optionRight" value="1" />
+         </attr>
+    </declare-styleable>
+</resources>

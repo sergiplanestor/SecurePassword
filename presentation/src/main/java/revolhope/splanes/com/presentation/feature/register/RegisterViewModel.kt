@@ -9,7 +9,7 @@ import androidx.lifecycle.SavedStateHandle
 import com.andrognito.patternlockview.PatternLockView
 import com.andrognito.patternlockview.utils.PatternLockUtils
 import revolhope.splanes.com.domain.model.LoginData
-import revolhope.splanes.com.domain.usecase.user.GetLoginDataUseCase
+import revolhope.splanes.com.domain.usecase.user.FetchLoginDataUseCase
 import revolhope.splanes.com.domain.usecase.user.InsertLoginDataUseCase
 import revolhope.splanes.com.domain.usecase.user.RegisterUserUseCase
 import revolhope.splanes.com.domain.util.sha256
@@ -19,7 +19,7 @@ import revolhope.splanes.com.presentation.common.base.BaseViewModel
 class RegisterViewModel @ViewModelInject constructor(
     @Assisted private val state: SavedStateHandle,
     private val insertLoginDataUseCase: InsertLoginDataUseCase,
-    private val fetchLoginDataUseCase: GetLoginDataUseCase,
+    private val fetchLoginDataUseCase: FetchLoginDataUseCase,
     private val registerUserUseCase: RegisterUserUseCase
 ) : BaseViewModel() {
 
@@ -117,7 +117,7 @@ class RegisterViewModel @ViewModelInject constructor(
     fun registerUser() {
         launchAsync {
             handleResponse(
-                responseState = fetchLoginDataUseCase.invoke(GetLoginDataUseCase.Request),
+                responseState = fetchLoginDataUseCase.invoke(FetchLoginDataUseCase.Request),
                 shouldPostError = false
             )?.let {
                 handleResponse(

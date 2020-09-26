@@ -2,16 +2,15 @@ package revolhope.splanes.com.presentation.common.dialog
 
 import android.app.AlertDialog
 import android.content.Context
-import android.graphics.Paint
-import android.graphics.Typeface
-import android.text.SpannableString
-import android.text.Spanned
-import android.text.TextPaint
-import android.text.style.MetricAffectingSpan
+import android.os.Build
+import android.os.VibrationEffect
+import android.os.Vibrator
 import android.widget.Toast
 import androidx.fragment.app.FragmentActivity
 import revolhope.splanes.com.presentation.R
 import revolhope.splanes.com.presentation.common.base.BaseDialog
+import revolhope.splanes.com.presentation.common.extensions.Font
+import revolhope.splanes.com.presentation.common.extensions.typeface
 
 fun Context.showToast(message: String, duration: Int = Toast.LENGTH_LONG) {
     Toast.makeText(this, message, duration).show()
@@ -19,6 +18,16 @@ fun Context.showToast(message: String, duration: Int = Toast.LENGTH_LONG) {
 
 fun Context.showToast(messageInt: Int, duration: Int = Toast.LENGTH_LONG) {
     showToast(getString(messageInt))
+}
+
+fun Context.vibrate(time: Long = 350) {
+    with(getSystemService(Context.VIBRATOR_SERVICE) as? Vibrator) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            this?.vibrate(VibrationEffect.createOneShot(time, VibrationEffect.DEFAULT_AMPLITUDE))
+        } else {
+            this?.vibrate(time)
+        }
+    }
 }
 
 fun FragmentActivity.showPickerDialog(model: DialogModel.Picker) =
@@ -50,8 +59,7 @@ class PopupAlert(private val model: DialogModel) : BaseDialog() {
 
     override fun initViews(builder: AlertDialog.Builder) {
 
-        val typeface = Typeface.createFromAsset(context?.assets, "poppins_medium.ttf")
-        builder.setTitle(typeface(typeface, model.title))
+        builder.setTitle(typeface(Font.MEDIUM, context?.assets, model.title))
         when (model) {
             is DialogModel.Simple -> {
                 builder.setMessage(model.message)
@@ -89,20 +97,3 @@ class PopupAlert(private val model: DialogModel) : BaseDialog() {
     }
 }
 
-fun typeface(typeface: Typeface, string: CharSequence?): SpannableString =
-    SpannableString(string).apply {
-        setSpan(TypefaceSpan(typeface), 0, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-    }
-
-
-class TypefaceSpan(private val typeface: Typeface) : MetricAffectingSpan() {
-    override fun updateDrawState(tp: TextPaint) {
-        tp.typeface = typeface
-        tp.flags = tp.flags or Paint.SUBPIXEL_TEXT_FLAG
-    }
-
-    override fun updateMeasureState(p: TextPaint) {
-        p.typeface = typeface
-        p.flags = p.flags or Paint.SUBPIXEL_TEXT_FLAG
-    }
-}

@@ -142,7 +142,7 @@
 
                 <TextView
                     android:id="@+id/authModeButton"
-                    style="@style/Button.Link"
+                    style="@style/ButtonLink"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/margin_small"
