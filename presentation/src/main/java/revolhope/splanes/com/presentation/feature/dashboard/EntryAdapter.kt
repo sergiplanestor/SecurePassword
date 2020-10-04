@@ -15,9 +15,9 @@ import revolhope.splanes.com.presentation.R
 
 class EntryAdapter(
     private val entries: List<EntryModel>,
-    private val onKeyClick: (EntryKeyModel) -> Unit,
-    private val onDirClick: (EntryDirectoryModel) -> Unit,
-    private val onLongClick: (EntryModel) -> Unit
+    private val onKeyClick: ((EntryKeyModel) -> Unit)?,
+    private val onDirClick: ((EntryDirectoryModel) -> Unit)?,
+    private val onLongClick: ((EntryModel) -> Unit)?
 ) : RecyclerView.Adapter<EntryAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
@@ -31,7 +31,7 @@ class EntryAdapter(
         with(entries[position]) {
             holder.name.text = name
             holder.itemView.setOnLongClickListener {
-                onLongClick.invoke(this)
+                onLongClick?.invoke(this)
                 true
             }
             when (this) {
@@ -40,14 +40,10 @@ class EntryAdapter(
                     holder.icon.imageTintList = ColorStateList.valueOf(
                         ContextCompat.getColor(
                             holder.itemView.context,
-                            if (content.isEmpty()) {
-                                R.color.colorSecondaryLight
-                            } else {
-                                R.color.colorSecondaryDark
-                            }
+                            R.color.colorSecondaryLight
                         )
                     )
-                    holder.itemView.setOnClickListener { onDirClick.invoke(this) }
+                    holder.itemView.setOnClickListener { onDirClick?.invoke(this) }
                 }
                 is EntryKeyModel -> {
                     holder.icon.setImageResource(R.drawable.ic_key)
@@ -57,7 +53,7 @@ class EntryAdapter(
                             R.color.colorPrimary
                         )
                     )
-                    holder.itemView.setOnClickListener { onKeyClick.invoke(this) }
+                    holder.itemView.setOnClickListener { onKeyClick?.invoke(this) }
                 }
             }
         }

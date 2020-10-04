@@ -9,7 +9,7 @@ data class EntryKeyModel(
     val keyLength: EntryKeyLength,
     val keyComplexity: EntryKeyComplexity,
     val extraInfo: String,
-    override var parentDirectoryModel: EntryDirectoryModel?,
+    override var parentId: String?,
     override val isDirectory: Boolean,
     val dateCreation: Long,
     val dateUpdate: Long

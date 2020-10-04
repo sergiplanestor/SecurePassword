@@ -33,6 +33,15 @@
     <string name="length">Length</string>
     <string name="simple">Simple</string>
     <string name="complex">Complex</string>
+    <string name="rename">Rename</string>
+    <string name="delete">Delete</string>
+    <string name="move_bottom_sheet_title">Move to…</string>
+    <string name="move">Move</string>
+    <string name="directory">Directory</string>
+    <string name="dialog_delete_title">Confirmation</string>
+    <string name="dialog_delete_message">Are you sure to delete this? Once done this action can not be revert.</string>
+    <string name="dialog_delete_accept">@string/delete</string>
+    <string name="key">Key</string>
     <string name="password_copied">Password Copied!</string>
     <string name="create_password">Create password</string>
     <string name="update_password">Update password</string>
@@ -42,6 +51,7 @@
     <string name="new_dir_bottom_sheet_title">Create new directory</string>
     <string name="generate_bottom_sheet_title">Password generation settings</string>
     <string name="hint_account_name">Account name</string>
+    <string name="entry_options">%s options</string>
     <string name="hint_password">@string/password</string>
     <string name="hint_extra_info">Brief</string>
     <string name="help_mandatory_field">Mandatory field</string>

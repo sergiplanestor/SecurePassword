@@ -5,6 +5,6 @@ import java.io.Serializable
 abstract class EntryModel : Serializable {
     abstract val id: String
     abstract val name: String
-    abstract var parentDirectoryModel: EntryDirectoryModel?
+    abstract var parentId: String?
     abstract val isDirectory: Boolean
 }

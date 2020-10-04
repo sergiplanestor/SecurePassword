@@ -35,7 +35,7 @@ class EntryKeyActivity : BaseActivity<ActivityEntryKeyBinding>() {
     companion object {
         private const val EXTRA_MODEL = "EntryKeyActivity#Model"
         private const val EXTRA_DIR = "EntryKeyActivity#Dir"
-        fun start(baseActivity: BaseActivity<*>, keyModel: EntryKeyModel? = null, dirModel: EntryDirectoryModel) {
+        fun start(baseActivity: BaseActivity<*>, keyModel: EntryKeyModel? = null, parentId: String) {
             baseActivity.startActivity(
                 Intent(
                     baseActivity,
@@ -45,7 +45,7 @@ class EntryKeyActivity : BaseActivity<ActivityEntryKeyBinding>() {
                         bundleOf(
                             EXTRA_NAVIGATION_TRANSITION to NavTransition.LATERAL,
                             EXTRA_MODEL to keyModel,
-                            EXTRA_DIR to dirModel
+                            EXTRA_DIR to parentId
                         )
                     )
                 }
@@ -84,7 +84,7 @@ class EntryKeyActivity : BaseActivity<ActivityEntryKeyBinding>() {
                     keyLength = length,
                     keyComplexity = complexity,
                     extraInfo = binding.extraInfoEditText.text.toString(),
-                    directoryModel = getDirectory()
+                    parentId = getDirectory()
                 )
             }
         }
@@ -93,6 +93,7 @@ class EntryKeyActivity : BaseActivity<ActivityEntryKeyBinding>() {
 
     override fun initObservers() {
         super.initObservers()
+        observe(viewModel.loaderState) { if(it) showLoader() else hideLoader() }
         observe(viewModel.entryKeyState) {
             if (it) {
                 // TODO: Give some feedback?
@@ -143,6 +144,6 @@ class EntryKeyActivity : BaseActivity<ActivityEntryKeyBinding>() {
     private fun getModel(): EntryKeyModel? =
         intent.extras?.getSerializable(EXTRA_MODEL) as? EntryKeyModel
 
-    private fun getDirectory(): EntryDirectoryModel? =
-        intent.extras?.getSerializable(EXTRA_DIR) as? EntryDirectoryModel ?: EntryDirectoryModel.Root
+    private fun getDirectory(): String =
+        intent.extras?.getString(EXTRA_DIR) ?: EntryDirectoryModel.Root.id
 }

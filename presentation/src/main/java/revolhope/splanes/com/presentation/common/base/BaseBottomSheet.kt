@@ -1,6 +1,5 @@
 package revolhope.splanes.com.presentation.common.base
 
-import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -14,13 +13,12 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
-abstract class BaseBottomSheet<T: ViewDataBinding>(
-    private val onDismiss: (() -> Unit)? = null
-) : BottomSheetDialogFragment() {
+abstract class BaseBottomSheet<T : ViewDataBinding> : BottomSheetDialogFragment() {
 
     abstract val layoutResource: Int
     open val stateExpanded = true
     lateinit var binding: T
+    private var isFirstOnResume: Boolean = true
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -37,16 +35,17 @@ abstract class BaseBottomSheet<T: ViewDataBinding>(
         if (stateExpanded) expand(view)
     }
 
-    override fun dismiss() {
-        super.dismiss()
-        onDismiss?.invoke()
+    override fun onResume() {
+        super.onResume()
+        if (isFirstOnResume) {
+            loadData()
+            isFirstOnResume = false
+        }
     }
 
-    override fun onCancel(dialog: DialogInterface) {
-        super.onCancel(dialog)
-        onDismiss?.invoke()
+    open fun loadData() {
+        // Nothing to do here
     }
-
 
     fun show(fm: FragmentManager) = show(fm, javaClass.name)
 
@@ -68,7 +67,7 @@ abstract class BaseBottomSheet<T: ViewDataBinding>(
     }
 
     open fun initObserve() {
-
+        // Nothing to do here
     }
 
     abstract fun initViews()

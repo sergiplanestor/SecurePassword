@@ -17,6 +17,7 @@ import revolhope.splanes.com.presentation.common.dialog.vibrate
 import revolhope.splanes.com.presentation.common.extensions.observe
 import revolhope.splanes.com.presentation.common.extensions.visibility
 import revolhope.splanes.com.presentation.databinding.ActivityDashboardBinding
+import revolhope.splanes.com.presentation.feature.entry.options.EntryOptionsBottomSheet
 import revolhope.splanes.com.presentation.feature.entry.dir.EntryDirBottomSheet
 import revolhope.splanes.com.presentation.feature.entry.key.EntryKeyActivity
 import javax.inject.Inject
@@ -51,17 +52,24 @@ class DashboardActivity : BaseActivity<ActivityDashboardBinding>() {
         super.initViews()
         supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_back)
         binding.fabAddKey.setOnClickListener {
-            EntryKeyActivity.start(baseActivity = this, dirModel = currentDirectory)
+            EntryKeyActivity.start(baseActivity = this, parentId = currentDirectory.id)
         }
         binding.fabAddDirectory.setOnClickListener {
-            EntryDirBottomSheet(::onNewDir).show(supportFragmentManager)
+            EntryDirBottomSheet(callback = ::onNewDir).show(supportFragmentManager)
         }
     }
 
     override fun initObservers() {
         super.initObservers()
         observe(viewModel.loaderState) { if (it) showLoader() else hideLoader() }
-        observe(viewModel.entry, ::setupEntries)
+        observe(viewModel.entries) {
+            it?.let {
+                currentDirectory = it.first
+                setupEntries(it.second)
+                viewModel.fetchDirHierarchy(it.first.id)
+            } ?: setupEmptyState(true)
+        }
+        observe(viewModel.dirHierarchy, ::setupIndicator)
         observe(viewModel.insertEntryState) {
             if (it) {
                 loadData()
@@ -73,18 +81,16 @@ class DashboardActivity : BaseActivity<ActivityDashboardBinding>() {
 
     override fun loadData() {
         super.loadData()
-        viewModel.fetchEntries()
+        viewModel.fetchEntries(currentDirectory.id)
     }
 
-    private fun setupEntries(dir: EntryDirectoryModel) {
-        currentDirectory = dir
+    private fun setupEntries(entries: List<EntryModel>) {
         setupActionBar()
-        setupIndicator()
-        setupEmptyState(currentDirectory.content.isEmpty())
+        setupEmptyState(entries.isEmpty())
         binding.recyclerContent.layoutManager =
             GridLayoutManager(this, 3, GridLayoutManager.VERTICAL, false)
         binding.recyclerContent.adapter =
-            EntryAdapter(currentDirectory.content, ::onKeyClick, ::onDirClick, ::onLongClick)
+            EntryAdapter(entries, ::onKeyClick, ::onDirClick, ::onLongClick)
     }
 
     private fun setupActionBar() {
@@ -99,11 +105,11 @@ class DashboardActivity : BaseActivity<ActivityDashboardBinding>() {
         }
     }
 
-    private fun setupIndicator() {
+    private fun setupIndicator(hierarchy: List<EntryDirectoryModel>) {
         with(binding.recyclerIndicators) {
             layoutManager =
                 LinearLayoutManager(this@DashboardActivity, LinearLayoutManager.HORIZONTAL, false)
-            adapter = EntryIndicatorAdapter(currentDirectory, ::onDirClick)
+            adapter = EntryIndicatorAdapter(hierarchy, ::onDirClick)
         }
     }
 
@@ -114,24 +120,25 @@ class DashboardActivity : BaseActivity<ActivityDashboardBinding>() {
     }
 
     private fun onKeyClick(key: EntryKeyModel) {
-        EntryKeyActivity.start(baseActivity = this, dirModel = currentDirectory, keyModel = key)
+        EntryKeyActivity.start(baseActivity = this, parentId = currentDirectory.id, keyModel = key)
     }
 
-    private fun onDirClick(dir: EntryDirectoryModel) = setupEntries(dir)
+    private fun onDirClick(dir: EntryDirectoryModel) = viewModel.fetchEntries(dir.id)
 
     private fun onLongClick(entry: EntryModel) {
         vibrate(time = 500)
+        EntryOptionsBottomSheet(entry).show(supportFragmentManager)
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean =
         if (item?.itemId == android.R.id.home && currentDirectory.id != EntryDirectoryModel.Root.id) {
-            currentDirectory.parentDirectoryModel?.let(::onDirClick)
+            currentDirectory.parentId?.let(viewModel::fetchEntries)
             true
         } else {
             super.onOptionsItemSelected(item)
         }
 
     override fun onBackPressed() {
-        currentDirectory.parentDirectoryModel?.let(::onDirClick) ?: super.onBackPressed()
+        currentDirectory.parentId?.let(viewModel::fetchEntries) ?: super.onBackPressed()
     }
 }

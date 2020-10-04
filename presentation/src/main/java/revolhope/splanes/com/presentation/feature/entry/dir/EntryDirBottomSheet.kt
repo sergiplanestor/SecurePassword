@@ -1,10 +1,12 @@
 package revolhope.splanes.com.presentation.feature.entry.dir
 
+import revolhope.splanes.com.domain.model.EntryDirectoryModel
 import revolhope.splanes.com.presentation.R
 import revolhope.splanes.com.presentation.common.base.BaseBottomSheet
 import revolhope.splanes.com.presentation.databinding.BottomSheetNewDirBinding
 
 class EntryDirBottomSheet(
+    private val model: EntryDirectoryModel? = null,
     private val callback: (String) -> Unit
 ) : BaseBottomSheet<BottomSheetNewDirBinding>() {
 
@@ -12,6 +14,7 @@ class EntryDirBottomSheet(
         get() = R.layout.bottom_sheet_new_dir
 
     override fun initViews() {
+        model?.let { binding.nameEditText.setText(it.name) }
         binding.createButton.setOnClickListener {
             if (checkFields()) {
                 callback.invoke(binding.nameEditText.text.toString())

@@ -12,18 +12,12 @@ import revolhope.splanes.com.domain.model.EntryDirectoryModel
 import revolhope.splanes.com.presentation.R
 
 class EntryIndicatorAdapter(
-    private val directory: EntryDirectoryModel,
+    private val hierarchy: List<EntryDirectoryModel>,
     private val onDirClick: (EntryDirectoryModel) -> Unit
 ) : RecyclerView.Adapter<EntryIndicatorAdapter.ViewHolder>() {
 
-    private val dirList: MutableList<EntryDirectoryModel> = mutableListOf()
-
     private companion object {
         private const val SEPARATOR = " > "
-    }
-
-    init {
-        createListFromDirectory()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
@@ -33,35 +27,18 @@ class EntryIndicatorAdapter(
         )
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        with(dirList[position]) {
+        with(hierarchy[position]) {
             holder.name.text = if (id != EntryDirectoryModel.Root.id) {
                 "$name$SEPARATOR"
             } else {
                 "${holder.itemView.context.getString(R.string.home)}$SEPARATOR"
             }
-            holder.setLink(id != directory.id, this, onDirClick)
+            holder.setLink(position != hierarchy.lastIndex, this, onDirClick)
         }
     }
 
-    override fun getItemCount(): Int {
-        var items = 1
-        var directoryModel: EntryDirectoryModel? = directory
-        while (directoryModel?.id != EntryDirectoryModel.Root.id) {
-            items++
-            directoryModel = directoryModel?.parentDirectoryModel
-        }
-        return items
-    }
+    override fun getItemCount(): Int = hierarchy.size
 
-
-    private fun createListFromDirectory() {
-        var directoryModel: EntryDirectoryModel = directory
-        dirList.add(directory)
-        while (directoryModel.parentDirectoryModel != null) {
-            directoryModel = directoryModel.parentDirectoryModel!!
-            dirList.add(0, directoryModel)
-        }
-    }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val name: TextView by lazy { itemView.findViewById(R.id.dirName) }

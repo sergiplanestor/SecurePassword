@@ -1,4 +1,4 @@
-package revolhope.splanes.com.presentation.feature.dashboard
+package revolhope.splanes.com.presentation.feature.entry.move
 
 import androidx.hilt.Assisted
 import androidx.hilt.lifecycle.ViewModelInject
@@ -9,14 +9,11 @@ import revolhope.splanes.com.domain.model.EntryDirectoryModel
 import revolhope.splanes.com.domain.model.EntryModel
 import revolhope.splanes.com.domain.usecase.entry.FetchDirHierarchyUseCase
 import revolhope.splanes.com.domain.usecase.entry.FetchEntriesUseCase
-import revolhope.splanes.com.domain.usecase.entry.InsertEntryUseCase
 import revolhope.splanes.com.presentation.common.base.BaseViewModel
-import java.util.UUID
 
-class DashboardViewModel @ViewModelInject constructor(
-    private val fetchEntriesUseCase: FetchEntriesUseCase,
+class EntryMoveViewModel @ViewModelInject constructor(
     private val fetchDirHierarchyUseCase: FetchDirHierarchyUseCase,
-    private val insertEntryUseCase: InsertEntryUseCase,
+    private val fetchEntriesUseCase: FetchEntriesUseCase,
     @Assisted private val state: SavedStateHandle
 ) : BaseViewModel() {
 
@@ -26,15 +23,13 @@ class DashboardViewModel @ViewModelInject constructor(
     val dirHierarchy: LiveData<List<EntryDirectoryModel>> get() = _dirHierarchy
     private val _dirHierarchy = MutableLiveData<List<EntryDirectoryModel>>()
 
-    val insertEntryState: LiveData<Boolean> get() = _insertEntryState
-    private var _insertEntryState = MutableLiveData<Boolean>()
-
-    fun fetchEntries(parentId: String) =
+    fun fetchDirectories(parentId: String) {
         launchAsync {
             handleResponse(
                 responseState = fetchEntriesUseCase.invoke(FetchEntriesUseCase.Request(parentId))
-            ).let(_entries::postValue)
+            )?.let(_entries::postValue)
         }
+    }
 
     fun fetchDirHierarchy(dirId: String) {
         launchAsync {
@@ -43,22 +38,4 @@ class DashboardViewModel @ViewModelInject constructor(
             )?.let(_dirHierarchy::postValue)
         }
     }
-
-    fun insertDir(name: String, parentDir: EntryDirectoryModel, oldModel: EntryDirectoryModel? = null) {
-        val entry = EntryDirectoryModel(
-            id = getId(oldModel),
-            name = name,
-            parentId = parentDir.id,
-            isDirectory = true
-        )
-        launchAsync {
-            handleResponse(
-                responseState = insertEntryUseCase.invoke(InsertEntryUseCase.Request(entry))
-            ).let { _insertEntryState.postValue(it ?: false) }
-        }
-    }
-
-    private fun getId(oldModel: EntryDirectoryModel?): String =
-        oldModel?.id ?: UUID.randomUUID().toString().replace("-", "")
-
 }

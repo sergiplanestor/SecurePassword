@@ -23,7 +23,7 @@ class AppLoader @JvmOverloads constructor(
     }
 
     fun show() {
-        binding.lottie.playAnimation()
         this.visible()
+        binding.lottie.playAnimation()
     }
 }

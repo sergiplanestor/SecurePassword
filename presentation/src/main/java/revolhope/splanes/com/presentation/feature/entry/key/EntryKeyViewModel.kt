@@ -33,7 +33,7 @@ class EntryKeyViewModel @ViewModelInject constructor(
         keyLength: EntryKeyLength?,
         keyComplexity: EntryKeyComplexity?,
         extraInfo: String,
-        directoryModel: EntryDirectoryModel?,
+        parentId: String?,
         oldModel: EntryKeyModel? = null
     ) {
         var hasErrors = false
@@ -45,7 +45,7 @@ class EntryKeyViewModel @ViewModelInject constructor(
             _formKeyState.value = false
             hasErrors = true
         }
-        if (keyLength == null || keyComplexity == null || directoryModel == null) {
+        if (keyLength == null || keyComplexity == null || parentId == null) {
             hasErrors = true
         }
         if (hasErrors) {
@@ -63,7 +63,7 @@ class EntryKeyViewModel @ViewModelInject constructor(
             keyLength = keyLength!!,
             keyComplexity = keyComplexity!!,
             extraInfo = extraInfo,
-            parentDirectoryModel = directoryModel,
+            parentId = parentId,
             isDirectory = false,
             dateCreation = System.currentTimeMillis(),
             dateUpdate = System.currentTimeMillis()
