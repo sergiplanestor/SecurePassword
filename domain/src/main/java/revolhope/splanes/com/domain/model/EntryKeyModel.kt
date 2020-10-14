@@ -4,7 +4,7 @@ import java.io.Serializable
 
 data class EntryKeyModel(
     override val id: String,
-    override val name: String,
+    override var name: String,
     val key: String,
     val keyLength: EntryKeyLength,
     val keyComplexity: EntryKeyComplexity,

@@ -5,16 +5,17 @@ import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
-import revolhope.splanes.com.domain.model.EntryDirectoryModel
 import revolhope.splanes.com.domain.model.EntryKeyComplexity
 import revolhope.splanes.com.domain.model.EntryKeyLength
 import revolhope.splanes.com.domain.model.EntryKeyModel
 import revolhope.splanes.com.domain.usecase.entry.InsertEntryUseCase
+import revolhope.splanes.com.domain.usecase.entry.UpdateEntryUseCase
 import revolhope.splanes.com.presentation.common.base.BaseViewModel
-import java.util.*
+import java.util.UUID
 
 class EntryKeyViewModel @ViewModelInject constructor(
     private val insertEntryUseCase: InsertEntryUseCase,
+    private val updateEntryUseCase: UpdateEntryUseCase,
     @Assisted private val state: SavedStateHandle
 ) : BaseViewModel() {
 
@@ -36,6 +37,8 @@ class EntryKeyViewModel @ViewModelInject constructor(
         parentId: String?,
         oldModel: EntryKeyModel? = null
     ) {
+        val kLength: EntryKeyLength
+        val kComplexity: EntryKeyComplexity
         var hasErrors = false
         if (name.isBlank()) {
             _formNameState.value = false
@@ -45,12 +48,19 @@ class EntryKeyViewModel @ViewModelInject constructor(
             _formKeyState.value = false
             hasErrors = true
         }
-        if (keyLength == null || keyComplexity == null || parentId == null) {
+        if (parentId == null) {
             hasErrors = true
         }
         if (hasErrors) {
             _entryKeyState.value = false
             return
+        }
+        if (keyLength == null && keyComplexity == null) {
+            kLength = EntryKeyLength.LENGTH_CUSTOM
+            kComplexity = EntryKeyComplexity.UNKNOWN
+        } else {
+            kLength = keyLength!!
+            kComplexity = keyComplexity!!
         }
 
         _formNameState.value = true
@@ -60,8 +70,8 @@ class EntryKeyViewModel @ViewModelInject constructor(
             id = getId(oldModel),
             name = name,
             key = key,
-            keyLength = keyLength!!,
-            keyComplexity = keyComplexity!!,
+            keyLength = kLength,
+            keyComplexity = kComplexity,
             extraInfo = extraInfo,
             parentId = parentId,
             isDirectory = false,
@@ -70,9 +80,12 @@ class EntryKeyViewModel @ViewModelInject constructor(
         )
 
         launchAsync {
-            handleResponse(
-                responseState = insertEntryUseCase.invoke(InsertEntryUseCase.Request(newModel))
-            )?.let(_entryKeyState::postValue)
+            val state = if (oldModel != null) {
+                updateEntryUseCase.invoke(UpdateEntryUseCase.Request(newModel))
+            } else {
+                insertEntryUseCase.invoke(InsertEntryUseCase.Request(newModel))
+            }
+            handleResponse(responseState = state)?.let(_entryKeyState::postValue)
         }
     }
 

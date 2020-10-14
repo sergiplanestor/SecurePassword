@@ -2,6 +2,7 @@
 <resources>
     <string name="app_name">SecurePassword</string>
     <string name="register">Register</string>
+    <string name="already_have_account">Already have account</string>
     <string name="email">Email</string>
     <string name="password">Password</string>
     <string name="biometrics">Biometrics</string>
@@ -14,11 +15,12 @@
     <string name="pattern_help">Draw your pattern to authenticate please</string>
     <string name="biometric_help">Log in using your biometric credential</string>
     <string name="register_help">Register on SecurePassword in order to can start storing your credentials and keep you accounts safe!</string>
+    <string name="already_have_account_help">Do you already have an account? Do login please!</string>
     <string name="click_here">click here</string>
     <string name="save">Save</string>
     <string name="change">Change</string>
     <string name="cancel">Cancel</string>
-    <string name="change_auth_method">Change authenticate method</string>
+    <string name="change_auth_method">Change auth method</string>
     <string name="ok">OK</string>
     <string name="try_again">Try again</string>
     <string name="home">Home</string>
@@ -35,6 +37,8 @@
     <string name="complex">Complex</string>
     <string name="rename">Rename</string>
     <string name="delete">Delete</string>
+    <string name="update">Update</string>
+    <string name="create_directory">Create directory</string>
     <string name="move_bottom_sheet_title">Move to…</string>
     <string name="move">Move</string>
     <string name="directory">Directory</string>
@@ -49,6 +53,7 @@
     <string name="date_creation">Created on %s</string>
     <string name="date_updated">Last updated on %s</string>
     <string name="new_dir_bottom_sheet_title">Create new directory</string>
+    <string name="update_dir_bottom_sheet_title">Update directory name</string>
     <string name="generate_bottom_sheet_title">Password generation settings</string>
     <string name="hint_account_name">Account name</string>
     <string name="entry_options">%s options</string>

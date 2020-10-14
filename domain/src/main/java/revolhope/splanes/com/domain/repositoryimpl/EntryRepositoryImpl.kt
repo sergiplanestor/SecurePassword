@@ -42,6 +42,40 @@ class EntryRepositoryImpl @Inject constructor(
             isDirectory = entry is EntryDirectoryModel
         ).also { if (it) EntryCacheDataSourceImpl.insertEntry(entry) }
 
+    override suspend fun updateEntry(entry: EntryModel): Boolean =
+        firebaseDataSource.updateEntry(
+            id = entry.id,
+            response = cryptographyUtils.encrypt(Gson().toJson(entry))
+                .let(EntryMapper::fromCryptoModelToResponse),
+            isDirectory = entry is EntryDirectoryModel
+        ).also { if (it) EntryCacheDataSourceImpl.updateEntry(entry) }
+
+    override suspend fun deleteEntry(entry: EntryModel): Boolean {
+        var isSuccess = true
+        if (entry is EntryDirectoryModel) {
+            mutableListOf<EntryModel>().apply {
+                add(entry)
+                addAll(EntryCacheDataSourceImpl.fetchChildren(entry.id))
+            }.forEach {
+                isSuccess = firebaseDataSource.deleteEntry(
+                    id = it.id,
+                    response = cryptographyUtils.encrypt(Gson().toJson(it))
+                        .let(EntryMapper::fromCryptoModelToResponse),
+                    isDirectory = it is EntryDirectoryModel
+                ).also { result -> if (result) EntryCacheDataSourceImpl.deleteEntry(it) }
+                if (!isSuccess) return false
+            }
+        } else {
+            isSuccess = firebaseDataSource.deleteEntry(
+                id = entry.id,
+                response = cryptographyUtils.encrypt(Gson().toJson(entry))
+                    .let(EntryMapper::fromCryptoModelToResponse),
+                isDirectory = false
+            ).also { if (it) EntryCacheDataSourceImpl.deleteEntry(entry) }
+        }
+        return isSuccess
+    }
+
     override suspend fun fetchHierarchy(dirId: String): List<EntryDirectoryModel> {
         if (EntryCacheDataSourceImpl.isCacheEmpty()) {
             fetchEntries(EntryDirectoryModel.Root.id)

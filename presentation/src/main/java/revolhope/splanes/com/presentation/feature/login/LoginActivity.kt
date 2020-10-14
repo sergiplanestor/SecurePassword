@@ -16,6 +16,7 @@ import revolhope.splanes.com.presentation.feature.login.authfragment.biometric.L
 import revolhope.splanes.com.presentation.feature.login.authfragment.password.LoginPasswordFragment
 import revolhope.splanes.com.presentation.feature.login.authfragment.pattern.LoginPatternFragment
 import revolhope.splanes.com.presentation.feature.login.authfragment.register.LoginRegisterFragment
+import revolhope.splanes.com.presentation.feature.login.authfragment.register.existingaccount.AlreadyHaveAccountBottomSheet
 
 @AndroidEntryPoint
 class LoginActivity : BaseActivity<ActivityLoginBinding>() {
@@ -27,6 +28,9 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>() {
 
     override fun initViews() {
         super.initViews()
+        binding.alreadyHaveAccountButton.setOnClickListener {
+            AlreadyHaveAccountBottomSheet(callback = viewModel::doLogin).show(supportFragmentManager)
+        }
         binding.changeAuthButton.setOnClickListener {
             showPickerDialog(
                 DialogModel.Picker(

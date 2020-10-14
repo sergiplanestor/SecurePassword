@@ -9,5 +9,9 @@ interface EntryRepository {
 
     suspend fun insertEntry(entry: EntryModel): Boolean
 
+    suspend fun updateEntry(entry: EntryModel): Boolean
+
+    suspend fun deleteEntry(entry: EntryModel): Boolean
+
     suspend fun fetchHierarchy(dirId: String): List<EntryDirectoryModel>
 }

@@ -1,5 +1,6 @@
 package revolhope.splanes.com.presentation.feature.entry.key
 
+import android.app.Activity
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
@@ -33,10 +34,16 @@ class EntryKeyActivity : BaseActivity<ActivityEntryKeyBinding>() {
         get() = R.layout.activity_entry_key
 
     companion object {
+        private const val REQ_CODE = 0x123
         private const val EXTRA_MODEL = "EntryKeyActivity#Model"
         private const val EXTRA_DIR = "EntryKeyActivity#Dir"
-        fun start(baseActivity: BaseActivity<*>, keyModel: EntryKeyModel? = null, parentId: String) {
-            baseActivity.startActivity(
+        fun start(
+            baseActivity: BaseActivity<*>,
+            keyModel: EntryKeyModel? = null,
+            parentId: String,
+            onKeyCreated: (Intent?, Int, Int) -> Unit
+        ) {
+            baseActivity.startActivityForResult(
                 Intent(
                     baseActivity,
                     EntryKeyActivity::class.java
@@ -48,7 +55,9 @@ class EntryKeyActivity : BaseActivity<ActivityEntryKeyBinding>() {
                             EXTRA_DIR to parentId
                         )
                     )
-                }
+                },
+                REQ_CODE,
+                onKeyCreated
             )
         }
     }
@@ -84,7 +93,8 @@ class EntryKeyActivity : BaseActivity<ActivityEntryKeyBinding>() {
                     keyLength = length,
                     keyComplexity = complexity,
                     extraInfo = binding.extraInfoEditText.text.toString(),
-                    parentId = getDirectory()
+                    parentId = getDirectory(),
+                    oldModel = getModel()
                 )
             }
         }
@@ -97,6 +107,7 @@ class EntryKeyActivity : BaseActivity<ActivityEntryKeyBinding>() {
         observe(viewModel.entryKeyState) {
             if (it) {
                 // TODO: Give some feedback?
+                setResult(Activity.RESULT_OK)
                 finish()
             } else {
                 // TODO: Error management

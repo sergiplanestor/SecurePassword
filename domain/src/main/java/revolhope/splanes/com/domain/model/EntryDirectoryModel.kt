@@ -4,7 +4,7 @@ import java.io.Serializable
 
 data class EntryDirectoryModel(
     override val id: String,
-    override val name: String,
+    override var name: String,
     override var parentId: String?,
     override val isDirectory: Boolean
 ) : EntryModel(), Serializable {

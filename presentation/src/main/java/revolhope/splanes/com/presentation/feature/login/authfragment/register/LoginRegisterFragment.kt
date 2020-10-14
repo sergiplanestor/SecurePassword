@@ -1,12 +1,10 @@
 package revolhope.splanes.com.presentation.feature.login.authfragment.register
 
 import android.app.Activity
-import androidx.fragment.app.Fragment
 import revolhope.splanes.com.domain.model.LoginData
 import revolhope.splanes.com.presentation.R
 import revolhope.splanes.com.presentation.common.base.BaseActivity
 import revolhope.splanes.com.presentation.common.base.BaseFragment
-import revolhope.splanes.com.presentation.databinding.FragmentLoginPatternBinding
 import revolhope.splanes.com.presentation.databinding.FragmentLoginRegisterBinding
 import revolhope.splanes.com.presentation.feature.login.LoginActivity
 import revolhope.splanes.com.presentation.feature.login.authfragment.LoginContract

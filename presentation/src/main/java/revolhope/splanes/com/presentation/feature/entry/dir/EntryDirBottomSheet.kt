@@ -14,6 +14,12 @@ class EntryDirBottomSheet(
         get() = R.layout.bottom_sheet_new_dir
 
     override fun initViews() {
+        binding.title.text = getString(
+            if (model != null) R.string.update_dir_bottom_sheet_title else R.string.new_dir_bottom_sheet_title
+        )
+        binding.createButton.text = getString(
+            if (model != null) R.string.update else R.string.create_directory
+        )
         model?.let { binding.nameEditText.setText(it.name) }
         binding.createButton.setOnClickListener {
             if (checkFields()) {

@@ -37,7 +37,7 @@ class DashboardViewModel @ViewModelInject constructor(
         }
 
     fun fetchDirHierarchy(dirId: String) {
-        launchAsync {
+        launchAsync(showLoader = false) {
             handleResponse(
                 responseState = fetchDirHierarchyUseCase.invoke(FetchDirHierarchyUseCase.Request(dirId))
             )?.let(_dirHierarchy::postValue)

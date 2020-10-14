@@ -8,7 +8,7 @@ import revolhope.splanes.com.presentation.R
 import revolhope.splanes.com.presentation.common.base.BaseBottomSheet
 import revolhope.splanes.com.presentation.common.dialog.DialogModel
 import revolhope.splanes.com.presentation.common.dialog.showAcceptCancelDialog
-import revolhope.splanes.com.presentation.common.dialog.showToast
+import revolhope.splanes.com.presentation.common.extensions.observe
 import revolhope.splanes.com.presentation.common.extensions.visibility
 import revolhope.splanes.com.presentation.databinding.BottomSheetEntryOptionsBinding
 import revolhope.splanes.com.presentation.feature.entry.dir.EntryDirBottomSheet
@@ -16,7 +16,8 @@ import revolhope.splanes.com.presentation.feature.entry.move.EntryMoveBottomShee
 
 @AndroidEntryPoint
 class EntryOptionsBottomSheet(
-    private val entryModel: EntryModel
+    private val entryModel: EntryModel,
+    private val onOptionFinished: (Boolean) -> Unit
 ) : BaseBottomSheet<BottomSheetEntryOptionsBinding>() {
 
     private val viewModel: EntryOptionsViewModel by viewModels()
@@ -60,17 +61,19 @@ class EntryOptionsBottomSheet(
 
     override fun initObserve() {
         super.initObserve()
+        observe(viewModel.renameResult, ::handleOptionResult)
+        observe(viewModel.moveResult, ::handleOptionResult)
+        observe(viewModel.deleteResult, ::handleOptionResult)
     }
 
-    private fun onDirectoryRenamed(name: String) {
-        context?.showToast("New name: $name")
-    }
+    private fun onDirectoryRenamed(name: String) = viewModel.renameDirectory(entryModel, name)
 
-    private fun onEntryMoved(dir: EntryDirectoryModel) {
-        context?.showToast("Move to -> dir name: ${dir.name}")
-    }
+    private fun onEntryMoved(dir: EntryDirectoryModel) = viewModel.moveEntry(entryModel, dir)
 
-    private fun onEntryDelete() {
-        context?.showToast("Delete item")
+    private fun onEntryDelete() = viewModel.deleteEntry(entryModel)
+
+    private fun handleOptionResult(result: Boolean) {
+        onOptionFinished.invoke(result)
+        if (result) dismiss()
     }
 }

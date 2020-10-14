@@ -39,6 +39,7 @@
         <item name="strokeColor">@color/colorPrimaryDark</item>
         <item name="android:textColor">@color/colorPrimaryDark</item>
         <item name="rippleColor">@color/colorPrimaryLight</item>
+        <item name="android:textAllCaps">false</item>
     </style>
 
     <style name="ButtonLink">

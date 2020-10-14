@@ -11,4 +11,6 @@ interface UserRepository {
     suspend fun registerUser(loginData: LoginData): Boolean
 
     suspend fun doUserLogin(loginData: LoginData): Boolean
+
+    suspend fun fetchUserRemote(email: String, pwd: String): LoginData?
 }

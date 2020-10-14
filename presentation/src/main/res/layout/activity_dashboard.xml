@@ -84,12 +84,12 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/margin_big"
             android:layout_marginBottom="@dimen/margin_big"
-            android:backgroundTint="@color/colorPrimary"
             android:src="@drawable/ic_add_directory"
-            android:tint="@color/white"
+            app:backgroundTint="@color/colorPrimary"
             app:fabSize="auto"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:tint="@color/white" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fabAddKey"
@@ -97,12 +97,12 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/margin_big"
             android:layout_marginBottom="@dimen/margin_big"
-            android:backgroundTint="@color/colorPrimary"
             android:src="@drawable/ic_key"
-            android:tint="@color/white"
+            app:backgroundTint="@color/colorPrimary"
             app:fabSize="auto"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/fabAddDirectory" />
+            app:layout_constraintEnd_toStartOf="@id/fabAddDirectory"
+            app:tint="@color/white" />
 
         <revolhope.splanes.com.presentation.common.component.AppLoader
             android:id="@+id/appLoader"

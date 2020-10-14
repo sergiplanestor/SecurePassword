@@ -1,5 +1,6 @@
 package revolhope.splanes.com.presentation.feature.dashboard
 
+import android.app.Activity
 import android.content.Intent
 import android.view.MenuItem
 import androidx.activity.viewModels
@@ -52,7 +53,11 @@ class DashboardActivity : BaseActivity<ActivityDashboardBinding>() {
         super.initViews()
         supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_back)
         binding.fabAddKey.setOnClickListener {
-            EntryKeyActivity.start(baseActivity = this, parentId = currentDirectory.id)
+            EntryKeyActivity.start(
+                baseActivity = this,
+                parentId = currentDirectory.id,
+                onKeyCreated = ::onKeyCreated
+            )
         }
         binding.fabAddDirectory.setOnClickListener {
             EntryDirBottomSheet(callback = ::onNewDir).show(supportFragmentManager)
@@ -120,14 +125,26 @@ class DashboardActivity : BaseActivity<ActivityDashboardBinding>() {
     }
 
     private fun onKeyClick(key: EntryKeyModel) {
-        EntryKeyActivity.start(baseActivity = this, parentId = currentDirectory.id, keyModel = key)
+        EntryKeyActivity.start(
+            baseActivity = this,
+            parentId = currentDirectory.id,
+            keyModel = key,
+            onKeyCreated = ::onKeyCreated
+        )
     }
 
     private fun onDirClick(dir: EntryDirectoryModel) = viewModel.fetchEntries(dir.id)
 
     private fun onLongClick(entry: EntryModel) {
         vibrate(time = 500)
-        EntryOptionsBottomSheet(entry).show(supportFragmentManager)
+        EntryOptionsBottomSheet(
+            entryModel = entry,
+            onOptionFinished = { if (it) loadData() }
+        ).show(supportFragmentManager)
+    }
+
+    private fun onKeyCreated(intent: Intent?, reqCode: Int, resultCode: Int) {
+        if (resultCode == Activity.RESULT_OK) loadData()
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean =
