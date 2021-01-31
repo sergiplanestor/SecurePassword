@@ -63,7 +63,6 @@ class CryptographyUtils @Inject constructor() {
         }
     }
 
-    // TODO!
     private fun generateCipher(
         keyName: String,
         mode: Int,
@@ -89,6 +88,7 @@ class CryptographyUtils @Inject constructor() {
         return keyStore?.containsAlias(FINGERPRINT_KEY) ?: false
     }
 
+    @Suppress("DEPRECATION")
     fun fingerprintAuth(
         fingerprintManager: FingerprintManager,
         onSuccess: () -> Unit,

@@ -51,14 +51,14 @@ abstract class BaseActivity<T: ViewDataBinding> : AppCompatActivity() {
         overrideTransition()
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        when (item?.itemId) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
             android.R.id.home -> {
                 finish()
                 return true
             }
         }
-        return item?.let { super.onOptionsItemSelected(item) } ?: false
+        return super.onOptionsItemSelected(item)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

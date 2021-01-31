@@ -147,8 +147,8 @@ class DashboardActivity : BaseActivity<ActivityDashboardBinding>() {
         if (resultCode == Activity.RESULT_OK) loadData()
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean =
-        if (item?.itemId == android.R.id.home && currentDirectory.id != EntryDirectoryModel.Root.id) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean =
+        if (item.itemId == android.R.id.home && currentDirectory.id != EntryDirectoryModel.Root.id) {
             currentDirectory.parentId?.let(viewModel::fetchEntries)
             true
         } else {

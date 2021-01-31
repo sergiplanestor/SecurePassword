@@ -13,6 +13,7 @@ import revolhope.splanes.com.presentation.common.base.BaseActivity
 import revolhope.splanes.com.presentation.common.dialog.DialogModel
 import revolhope.splanes.com.presentation.common.dialog.showPickerDialog
 import revolhope.splanes.com.presentation.common.dialog.showToast
+import revolhope.splanes.com.presentation.common.extensions.justify
 import revolhope.splanes.com.presentation.databinding.ActivityRegisterBinding
 import revolhope.splanes.com.presentation.common.extensions.observe
 import revolhope.splanes.com.presentation.util.biometric.BiometricUtils
@@ -47,13 +48,29 @@ class RegisterActivity : BaseActivity<ActivityRegisterBinding>() {
             }
     }
 
+    override fun initObservers() {
+        super.initObservers()
+        observe(viewModel.patternState, ::onPatternStateReceived)
+        observe(viewModel.patternError, ::onPatternError)
+        observe(viewModel.emailError, ::onEmailError)
+        observe(viewModel.pwdError, ::onPasswordError)
+        observe(viewModel.storeCredentialsState, ::onStoreCredentialsStateReceived)
+        observe(viewModel.registerState, ::onRegisterStateReceived)
+    }
+
     override fun initViews() {
         super.initViews()
-        binding.backButton.setOnClickListener { onBackPressed() }
+
         binding.currentAuthMode.text = getString(
             R.string.register_default_auth_mode,
             getString(R.string.password)
         )
+        initListeners()
+        justifyTexts()
+    }
+
+    private fun initListeners() {
+        binding.backButton.setOnClickListener { onBackPressed() }
         binding.patternLockView.addPatternLockListener(object : PatternLockViewListener {
 
             override fun onStarted() {
@@ -129,48 +146,68 @@ class RegisterActivity : BaseActivity<ActivityRegisterBinding>() {
         }
     }
 
-    override fun initObservers() {
-        super.initObservers()
-        observe(viewModel.patternState) {
-            if (it.first) {
-                pattern = it.second
-            } else {
-                pattern = null
-                showToast(it.second)
-            }
-            binding.patternLockView.postDelayed(
-                { binding.patternLockView.clearPattern() },
-                PATTERN_DELAY
-            )
+    private fun justifyTexts() {
+        binding.pwdTitle.justify()
+        binding.patternTitle.justify()
+        binding.currentAuthMode.justify()
+    }
+
+    /**
+     * @param state Pair containing if pattern is ok as first param and, in case of patter ok
+     * second param contain pattern, in case of false, contains error message.
+     */
+    private fun onPatternStateReceived(state: Pair<Boolean, String>) {
+        if (state.first) {
+            pattern = state.second
+        } else {
+            pattern = null
+            showToast(state.second)
         }
-        observe(viewModel.patternError) {
-            binding.patternLockView.normalStateColor = if (it) {
-                getColor(android.R.color.holo_green_dark)
-            } else {
-                getColor(R.color.pomegranate)
-            }
-            binding.patternLockView.invalidate()
+        binding.patternLockView.postDelayed(
+            { binding.patternLockView.clearPattern() },
+            PATTERN_DELAY
+        )
+    }
+
+    private fun onPatternError(isOk: Boolean) {
+        binding.patternLockView.normalStateColor = if (isOk) {
+            getColor(android.R.color.holo_green_dark)
+        } else {
+            getColor(R.color.pomegranate)
         }
-        observe(viewModel.emailError) {
-            binding.emailInputLayout.error = if (it.first) null else getString(it.second)
+        binding.patternLockView.invalidate()
+    }
+
+    /**
+     * @param state Pair containing if email is ok as first param and, in case of email KO
+     * second param contains error message as string resource id.
+     */
+    private fun onEmailError(state: Pair<Boolean, Int>) {
+        binding.emailInputLayout.error = if (state.first) null else getString(state.second)
+    }
+
+    /**
+     * @param state Pair containing if password is ok as first param and, in case of password KO
+     * second param contains error message as string resource id.
+     */
+    private fun onPasswordError(state: Pair<Boolean, Int>) {
+        binding.pwdInputLayout.error = if (state.first) null else getString(state.second)
+    }
+
+    private fun onStoreCredentialsStateReceived(isSuccess: Boolean) {
+        if (isSuccess) {
+            viewModel.registerUser()
+        } else {
+            showToast(R.string.error_storing_credentials)
         }
-        observe(viewModel.pwdError) {
-            binding.pwdInputLayout.error = if (it.first) null else getString(it.second)
-        }
-        observe(viewModel.storeCredentialsState) { storeSuccess ->
-            if (storeSuccess) {
-                viewModel.registerUser()
-            } else {
-                showToast(R.string.error_storing_credentials)
-            }
-        }
-        observe(viewModel.registerState) { registerSuccess ->
-            if (registerSuccess) {
-                setResult(Activity.RESULT_OK)
-                finish()
-            } else {
-                showToast(R.string.error_storing_credentials)
-            }
+    }
+
+    private fun onRegisterStateReceived(isSuccess: Boolean) {
+        if (isSuccess) {
+            setResult(Activity.RESULT_OK)
+            finish()
+        } else {
+            showToast(R.string.error_storing_credentials)
         }
     }
 }
